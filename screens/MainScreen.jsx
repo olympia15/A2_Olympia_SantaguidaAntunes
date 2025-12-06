@@ -48,7 +48,7 @@ export default function MainScreen({ navigation }) {
         try {
 
             // api call
-            const apiKey = "API_KEY"; // replace with actual key
+            const apiKey = "fca_live_Au4AfANuiZfOWK2wm2F2V4Q7ANadOeH775JlW5M1"; // replace with actual key
             const response = await fetch(); // TODO: get API url
 
             // check if request was successful
