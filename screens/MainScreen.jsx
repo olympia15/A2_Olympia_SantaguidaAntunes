@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Alert } from "react-native";
 
 export default function MainScreen({ navigation }) {
 
@@ -43,6 +44,43 @@ export default function MainScreen({ navigation }) {
 
         setLoading(true);
         setResult(null); 
+
+        try {
+
+            // api call
+            const apiKey = "API_KEY"; // replace with actual key
+            const response = await fetch(); // TODO: get API url
+
+            // check if request was successful
+            if(!response.ok){
+                if (response.status == 401){
+                    throw new Error("Invalid API key.");
+                }else if (response.status == 422){
+                    throw new Error("Invalid currency code.");
+                }else{
+                    throw new Error("Failed to get exchange rates.");
+                }
+            }
+
+            // parse the JSON response
+            const data = await response.json();
+
+            // validate the response
+            if (!data.data || !data.data[destinationCurrency]){
+                throw new Error(`Exchange rate for ${destinationCurrency} not found.`);
+            }
+
+            const exchangeRate = data.data[destinationCurrency];
+            const convertedAmount = parseFloat(amount) * exchangeRate;
+            setResult({
+                convertedAmount: convertedAmount.toFixed(2),
+                exchangeRate: exchangeRate.toFixed(4)
+            })
+        } catch (error){
+            Alert.alert("Error", error.message);
+        }finally{
+            setLoading(false);
+        }
 
     }
 
