@@ -81,8 +81,13 @@ export default function MainScreen({ navigation }) {
         }finally{
             setLoading(false);
         }
-
     }
+
+    return(
+
+        
+
+    )
 
 
 
