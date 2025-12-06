@@ -131,8 +131,11 @@ export default function MainScreen({ navigation }) {
                 </View>
             )}
 
-            {/* TODO: AboutScreen button here */}
-
+            {/* Navigate to AboutScreen */}
+            <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate("About")}>
+                <Text style={styles.aboutButtonText}>About</Text>
+            </TouchableOpacity>
         </View>
-    )
+    );
+
 }
