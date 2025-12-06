@@ -135,9 +135,4 @@ export default function MainScreen({ navigation }) {
 
         </View>
     )
-
-
-
-
-
 }
