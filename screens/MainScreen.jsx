@@ -1,124 +1,123 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from "react-native";
 
 export default function MainScreen({ navigation }) {
 
-    // set the default states
     const [baseCurrency, setBaseCurrency] = useState("CAD");
     const [destinationCurrency, setDestinationCurrency] = useState("");
     const [result, setResult] = useState(null);
     const [amount, setAmount] = useState("1");
     const [loading, setLoading] = useState(false);
 
-    // validate currency code format
-    const validateCurrencyCode = (code) => {
-        const regex = /^[A-Z]{3}$/; // exactly 3 uppercase letters
-        return regex.test(code);
-    }
-
-    // validate amount (must be positive)
+    const validateCurrencyCode = (code) => /^[A-Z]{3}$/.test(code);
     const validateAmount = (value) => {
-        const number = parseFloat(value); // convert string to number (float)
-        return !isNaN(number) && number > 0; // check if number is valid and positive
-    }
+        const number = parseFloat(value);
+        return !isNaN(number) && number > 0;
+    };
 
-    // convert currency function
     const convertCurrency = async () => {
-
-        // validate currency input
         if (!validateCurrencyCode(baseCurrency)) {
-            Alert.alert("Invalid Input", "Base currency must be a 3 letter code (e.g., USD, CAD).");
+            Alert.alert("Invalid Input", "Base currency must be a 3 letter uppercase code.");
             return;
         }
 
-        // validate destination amount input
         if (!validateCurrencyCode(destinationCurrency)) {
-            Alert.alert("Invalid Input", "Destination currency must be a 3 letter code (e.g., USD, CAD).");
+            Alert.alert("Invalid Input", "Destination currency must be a 3 letter uppercase code.");
+            return;
         }
 
-        // validate amount input
         if (!validateAmount(amount)) {
             Alert.alert("Invalid Input", "Amount must be a positive number.");
             return;
         }
 
         setLoading(true);
-        setResult(null); 
+        setResult(null);
 
         try {
-
-            // api call
             const apiKey = "fca_live_Au4AfANuiZfOWK2wm2F2V4Q7ANadOeH775JlW5M1";
-            const response = await fetch();
+            const response = await fetch(
+                `https://api.freecurrencyapi.com/v1/latest?apikey=${apiKey}&base_currency=${baseCurrency}`
+            );
 
-            // check if request was successful
-            if(!response.ok){
-                if (response.status == 401){
-                    throw new Error("Invalid API key.");
-                }else if (response.status == 422){
-                    throw new Error("Invalid currency code.");
-                }else{
-                    throw new Error("Failed to get exchange rates.");
-                }
+            if (!response.ok) {
+                if (response.status === 401) throw new Error("Invalid API key.");
+                if (response.status === 422) throw new Error("Invalid currency code.");
+                throw new Error("Failed to get exchange rates.");
             }
 
-            // parse the JSON response
             const data = await response.json();
 
-            // validate the response
-            if (!data.data || !data.data[destinationCurrency]){
+            if (!data.data || !data.data[destinationCurrency]) {
                 throw new Error(`Exchange rate for ${destinationCurrency} not found.`);
             }
 
             const exchangeRate = data.data[destinationCurrency];
             const convertedAmount = parseFloat(amount) * exchangeRate;
+
             setResult({
                 convertedAmount: convertedAmount.toFixed(2),
-                exchangeRate: exchangeRate.toFixed(4)
-            })
-        } catch (error){
+                exchangeRate: exchangeRate.toFixed(4),
+            });
+
+        } catch (error) {
             Alert.alert("Error", error.message);
-        }finally{
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
-    return(
-        <View>
-            <Text style={StyleSheet.title}>Currency Converter</Text>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Currency Converter</Text>
 
-            {/* Base Currency Input */}
-            <View style={StyleSheet.inputContainer}>
+            <View style={styles.inputContainer}>
                 <Text style={styles.label}>Base Currency</Text>
-                <TextInput style={styles.input} value={baseCurrency} onChangeText={setBaseCurrency}
-                    placeholder="CAD" autoCapitalize="characters" maxLength={3}/>
+                <TextInput
+                    style={styles.input}
+                    value={baseCurrency}
+                    onChangeText={setBaseCurrency}
+                    placeholder="CAD"
+                    autoCapitalize="characters"
+                    maxLength={3}
+                />
             </View>
 
-            {/* Destination Currency Input */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Destination Currency</Text>
-                <TextInput style={styles.input} value={destinationCurrency} onChangeText={setDestinationCurrency}
-                    placeholder="USD" autoCapitalize="characters" maxLength={3}/>
+                <TextInput
+                    style={styles.input}
+                    value={destinationCurrency}
+                    onChangeText={setDestinationCurrency}
+                    placeholder="USD"
+                    autoCapitalize="characters"
+                    maxLength={3}
+                />
             </View>
 
-            {/* Amount Input */}
             <View style={styles.inputContainer}>
                 <Text style={styles.label}>Amount</Text>
-                <TextInput style={styles.input} value={amount} onChangeText={setAmount}
-                    placeholder="1" keyboardType="numeric"/>
+                <TextInput
+                    style={styles.input}
+                    value={amount}
+                    onChangeText={setAmount}
+                    placeholder="1"
+                    keyboardType="numeric"
+                />
             </View>
 
-            {/* Convert Button */}
-            <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]}
-                onPress={convertCurrency} disabled={loading}>
-                    {loading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <Text style={styles.buttonText}>Convert</Text>
-                    )}
+            <TouchableOpacity
+                style={[styles.button, loading && styles.buttonDisabled]}
+                onPress={convertCurrency}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color="#fff" />
+                ) : (
+                    <Text style={styles.buttonText}>Convert</Text>
+                )}
             </TouchableOpacity>
 
-            {/* Display Results */}
             {result && (
                 <View style={styles.resultContainer}>
                     <Text style={styles.resultTitle}>Conversion Result</Text>
@@ -131,11 +130,38 @@ export default function MainScreen({ navigation }) {
                 </View>
             )}
 
-            {/* Navigate to AboutScreen */}
             <TouchableOpacity style={styles.aboutButton} onPress={() => navigation.navigate("About")}>
                 <Text style={styles.aboutButtonText}>About</Text>
             </TouchableOpacity>
         </View>
     );
-
 }
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 20, marginTop: 50 },
+    title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+    inputContainer: { marginBottom: 15 },
+    label: { fontWeight: "600", marginBottom: 5 },
+    input: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        padding: 10,
+        borderRadius: 5,
+        fontSize: 16,
+    },
+    button: {
+        backgroundColor: "#007AFF",
+        padding: 15,
+        borderRadius: 5,
+        alignItems: "center",
+        marginTop: 10,
+    },
+    buttonDisabled: { backgroundColor: "#8EBEFF" },
+    buttonText: { color: "#fff", fontWeight: "bold", fontSize: 18 },
+    resultContainer: { marginTop: 20, padding: 15, backgroundColor: "#f1f1f1", borderRadius: 5 },
+    resultTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
+    resultText: { fontSize: 16 },
+    rateText: { fontSize: 14, color: "#555", marginTop: 10 },
+    aboutButton: { marginTop: 30, padding: 10, alignItems: "center" },
+    aboutButtonText: { color: "#007AFF", fontWeight: "bold", fontSize: 16 },
+});
