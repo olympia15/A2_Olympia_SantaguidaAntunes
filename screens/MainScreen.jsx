@@ -138,9 +138,22 @@ export default function MainScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 20, marginTop: 50 },
-    title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-    inputContainer: { marginBottom: 15 },
+    container: {
+      flex: 1,
+      padding: 20,
+      paddingTop: 60,
+      backgroundColor: "#f9f9f9",
+    },
+    title: {
+      fontSize: 26,
+      fontWeight: "bold",
+      marginBottom: 20,
+      textAlign: "center",
+      color: "#333",
+    },
+    inputContainer: {
+      marginBottom: 20,
+    },
     label: { fontWeight: "600", marginBottom: 5 },
     input: {
         borderWidth: 1,
