@@ -118,10 +118,22 @@ export default function MainScreen({ navigation }) {
                     )}
             </TouchableOpacity>
 
+            {/* Display Results */}
+            {result && (
+                <View style={styles.resultContainer}>
+                    <Text style={styles.resultTitle}>Conversion Result</Text>
+                    <Text style={styles.resultText}>
+                        {amount} {baseCurrency} = {result.convertedAmount} {destinationCurrency}
+                    </Text>
+                    <Text style={styles.rateText}>
+                        Exchange Rate: 1 {baseCurrency} = {result.exchangeRate} {destinationCurrency}
+                    </Text>
+                </View>
+            )}
+
+            {/* TODO: AboutScreen button here */}
 
         </View>
-
-
     )
 
 
