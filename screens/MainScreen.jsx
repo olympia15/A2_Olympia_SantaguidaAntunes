@@ -76,7 +76,7 @@ export default function MainScreen({ navigation }) {
                 <TextInput
                     style={styles.input}
                     value={baseCurrency}
-                    onChangeText={setBaseCurrency}
+                    onChangeText={(text) => setBaseCurrency(text.toUpperCase())}
                     placeholder="CAD"
                     autoCapitalize="characters"
                     maxLength={3}
@@ -88,7 +88,7 @@ export default function MainScreen({ navigation }) {
                 <TextInput
                     style={styles.input}
                     value={destinationCurrency}
-                    onChangeText={setDestinationCurrency}
+                    onChangeText={(text) => setDestinationCurrency(text.toUpperCase())}
                     placeholder="USD"
                     autoCapitalize="characters"
                     maxLength={3}
