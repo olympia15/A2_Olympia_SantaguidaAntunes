@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import MainScreen from "./screens/MainScreen";
 
 // create stack navigator instance
 const Stack = createStackNavigator();

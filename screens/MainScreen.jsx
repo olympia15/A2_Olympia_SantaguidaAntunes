@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function MainScreen({ navigation }) {
 
@@ -84,8 +84,43 @@ export default function MainScreen({ navigation }) {
     }
 
     return(
+        <View>
+            <Text style={StyleSheet.title}>Currency Converter</Text>
 
-        
+            {/* Base Currency Input */}
+            <View style={StyleSheet.inputContainer}>
+                <Text style={styles.label}>Base Currency</Text>
+                <TextInput style={styles.input} value={baseCurrency} onChangeText={setBaseCurrency}
+                    placeholder="CAD" autoCapitalize="characters" maxLength={3}/>
+            </View>
+
+            {/* Destination Currency Input */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Destination Currency</Text>
+                <TextInput style={styles.input} value={destinationCurrency} onChangeText={setDestinationCurrency}
+                    placeholder="USD" autoCapitalize="characters" maxLength={3}/>
+            </View>
+
+            {/* Amount Input */}
+            <View style={styles.inputContainer}>
+                <Text style={styles.label}>Amount</Text>
+                <TextInput style={styles.input} value={amount} onChangeText={setAmount}
+                    placeholder="1" keyboardType="numeric"/>
+            </View>
+
+            {/* Convert Button */}
+            <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]}
+                onPress={convertCurrency} disabled={loading}>
+                    {loading ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={styles.buttonText}>Convert</Text>
+                    )}
+            </TouchableOpacity>
+
+
+        </View>
+
 
     )
 
